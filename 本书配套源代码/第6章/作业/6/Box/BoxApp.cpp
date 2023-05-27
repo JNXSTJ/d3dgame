@@ -25,7 +25,7 @@ struct Vertex
 struct ObjectConstants
 {
     XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
-    XMFLOAT4 gTime = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+    float gTime = 0.0f;
 };
 
 class BoxApp : public D3DApp
@@ -171,7 +171,7 @@ void BoxApp::Update(const GameTimer& gt)
 	ObjectConstants objConstants;
     XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
     float now = gt.TotalTime();
-    XMStoreFloat4(&objConstants.gTime, XMVectorSet(now, now, now, now));
+    objConstants.gTime = now;
     mObjectCB->CopyData(0, objConstants);
 
 }
