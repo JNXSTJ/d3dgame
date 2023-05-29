@@ -4,8 +4,61 @@
 
 #include "GeometryGenerator.h"
 #include <algorithm>
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <cstring>
 
 using namespace DirectX;
+
+GeometryGenerator::MeshData GeometryGenerator::CreateSkull()
+{
+	MeshData meshData;
+	std::string path("Models/Skull.txt");
+	std::ifstream ifs;
+	ifs.open(path.c_str(), std::ios::in);
+	if (!ifs.is_open())
+	{
+		std::cout << "open skull.txt failed!" << std::endl;
+		exit(-1);
+	}
+	int vertex_count, triangle_count;
+	char buf[100];
+	ifs.getline(buf, sizeof(buf));
+	sscanf(buf, "VertexCount: %d", &vertex_count);
+	ifs.getline(buf, sizeof(buf));
+	sscanf(buf, "TriangleCount: %d", &triangle_count);
+	ifs.getline(buf, sizeof(buf));
+	ifs.getline(buf, sizeof(buf));
+	std::vector<Vertex> v(vertex_count);
+	for (int i = 0; i < vertex_count; i++)
+	{
+		ifs.getline(buf, sizeof(buf));
+		float px, py, pz, nx, ny, nz;
+		sscanf(buf, "\t%f %f %f %f %f %f", &px, &py, &pz, &nx, &ny, &nz);
+		v[i] = {px, py, pz, nx, ny, nz, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+	}
+	meshData.Vertices.assign(v.begin(), v.end());
+
+	ifs.getline(buf, sizeof(buf));
+	ifs.getline(buf, sizeof(buf));
+	ifs.getline(buf, sizeof(buf));
+	std::vector<uint32> indexs(triangle_count * 3);
+	for (int i = 0; i < triangle_count; i++)
+	{
+		ifs.getline(buf, sizeof(buf));
+		int x, y, z;
+		sscanf(buf, "\t%d %d %d", &x, &y, &z);
+		indexs[i * 3 + 0] = x;
+		indexs[i * 3 + 1] = y;
+		indexs[i * 3 + 2] = z;
+	}
+	meshData.Indices32.assign(indexs.begin(), indexs.end());
+
+	ifs.close();
+
+	return meshData;
+}
 
 GeometryGenerator::MeshData GeometryGenerator::CreateBox(float width, float height, float depth, uint32 numSubdivisions)
 {

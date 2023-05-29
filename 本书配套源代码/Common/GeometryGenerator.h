@@ -74,6 +74,9 @@ public:
 		std::vector<uint16> mIndices16;
 	};
 
+	///</summary>
+    MeshData CreateSkull();
+
 	///<summary>
 	/// Creates a box centered at the origin with the given dimensions, where each
     /// face has m rows and n columns of vertices.
