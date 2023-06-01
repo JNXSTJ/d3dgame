@@ -472,7 +472,7 @@ void CrateApp::LoadTextures()
 void CrateApp::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0);
 
     // Root parameter can be a table, root descriptor or root constants.
     CD3DX12_ROOT_PARAMETER slotRootParameter[4];
@@ -535,6 +535,9 @@ void CrateApp::BuildDescriptorHeaps()
 	srvDesc[0].Texture2D.MipLevels = flareTex->GetDesc().MipLevels;
 	srvDesc[0].Texture2D.ResourceMinLODClamp = 0.0f;
 
+	md3dDevice->CreateShaderResourceView(flareTex.Get(), srvDesc, hDescriptor);
+
+	hDescriptor.Offset(1, mCbvSrvUavDescriptorSize);
 
 	auto flareAlphaTex = mTextures["flareAlphaTex"]->Resource;
  
@@ -542,10 +545,9 @@ void CrateApp::BuildDescriptorHeaps()
 	srvDesc[1].Format = flareAlphaTex->GetDesc().Format;
 	srvDesc[1].ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc[1].Texture2D.MostDetailedMip = 0;
-	srvDesc[1].Texture2D.MipLevels = flareTex->GetDesc().MipLevels;
+	srvDesc[1].Texture2D.MipLevels = flareAlphaTex->GetDesc().MipLevels;
 	srvDesc[1].Texture2D.ResourceMinLODClamp = 0.0f;
-	ID3D12Resource* resources[2] = { flareTex.Get(), flareAlphaTex.Get() };
-	md3dDevice->CreateShaderResourceView(*resources, srvDesc, hDescriptor);
+	md3dDevice->CreateShaderResourceView(flareAlphaTex.Get(), &srvDesc[1], hDescriptor);
 }
 
 void CrateApp::BuildShadersAndInputLayout()
