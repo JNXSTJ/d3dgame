@@ -74,6 +74,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateBox(float width, float heig
 	float h2 = 0.5f*height;
 	float d2 = 0.5f*depth;
     
+	// 9.1 exersice need to modify here code.
 	// Fill in the front face vertex data.
 	v[0] = Vertex(-w2, -h2, -d2, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 	v[1] = Vertex(-w2, +h2, -d2, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
